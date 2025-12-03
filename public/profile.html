@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-paper" onload="initBGM(); checkLogin(); showUser();">
+
+<!-- ⭐ 返回上一頁（小型木頭風按鈕） -->
+<button class="btn-back" onclick="history.back()">← 返回</button>
+
+<div class="profile-box">
+
+    <h2>Player Profile</h2>
+    <p id="username-info"></p>
+
+    <button class="btn-wood" onclick="window.location.href='coupon.html'">My Coupons</button>
+
+    <button class="btn-wood" onclick="logout()">Logout</button>
+
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>

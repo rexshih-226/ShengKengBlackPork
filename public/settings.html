@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>設定 - DeepSK</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- ⭐ 同時載入暱稱 + 音樂狀態 -->
+<body class="bg-paper" onload="loadSettingsPage(); initBGM(); checkLogin();">
+
+<!-- 返回上一頁（木頭風按鈕） -->
+<button class="btn-back" onclick="history.back()">← 返回</button>
+
+<div class="settings-box">
+
+    <h2>遊戲設定 Game Settings</h2>
+
+    <!-- ======================
+         顯示目前暱稱
+    ======================== -->
+    <label>目前暱稱：</label>
+    <p id="current-name" class="current-name">（讀取中…）</p>
+
+    <!-- ======================
+         修改暱稱
+    ======================== -->
+    <label>修改暱稱：</label>
+    <input id="new-name" type="text" class="input-wood" placeholder="輸入新暱稱">
+
+    <button class="btn-wood" onclick="saveNewName()">儲存變更</button>
+
+    <!-- ======================
+         音樂設定
+    ======================== -->
+    <label style="margin-top: 25px;">背景音樂：</label>
+
+    <button id="music-btn" class="btn-wood" onclick="toggleMusic()">
+        Loading...
+    </button>
+
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>

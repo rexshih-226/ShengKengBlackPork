@@ -1,0 +1,258 @@
+body {
+    margin: 0;
+    background: #f5f5f5;
+    font-family: "Noto Sans TC", sans-serif;
+}
+
+.container {
+    margin: 40px auto;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+input {
+    width: 80%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 86%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3a7bf4;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2f68d1;
+}
+
+.topbar {
+    background: #3a7bf4;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.topbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+#map {
+    height: 90vh;
+}
+/* ======================
+   DeepSK 木頭茶葉主題
+   ====================== */
+
+.bg-paper {
+    background: #f3e8ce;
+    font-family: "Noto Sans TC", sans-serif;
+}
+
+/* 登入盒子 */
+.login-box, .home-box, .profile-box {
+    width: 360px;
+    margin: 60px auto;
+    background: rgba(255,255,255,0.6);
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 標題文字 */
+.title {
+    font-size: 38px;
+    color: #7a6229;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* 植物 Logo */
+.logo-plant {
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+/* 木頭按鈕 */
+.btn-wood {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 20px;
+    color: #f7e7b3;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: url('https://i.imgur.com/WuSz2xU.jpg');
+    background-size: cover;
+    cursor: pointer;
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.3);
+}
+.btn-wood:hover {
+    opacity: 0.8;
+}
+
+/* 木頭風輸入框 */
+.input-wood {
+    width: 80%;              /* 固定比例寬度 */
+    padding: 12px;
+    margin: 12px auto;       /* ⭐ 這行確保水平置中 */
+    display: block;          /* ⭐ 讓 margin auto 生效 */
+    border: 2px solid #c9b28b;
+    border-radius: 10px;
+    background: #fff9ec;
+    text-align: center;      /* ⭐ 內容文字置中 */
+    font-size: 18px;
+}
+
+
+/* 左上角個人資訊按鈕 */
+.user-icon img {
+    width: 60px;
+}
+.user-icon {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    cursor: pointer;
+}
+/* ==========================================
+   DeepSK 木頭主題按鈕＋文字強化版
+   ========================================== */
+
+/* 木頭按鈕的字色：深金棕 */
+.btn-wood {
+    color: #5B3A1E !important; /* 深木色字體 */
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.4); /* 亮邊提升可讀性 */
+}
+
+/* 地圖頁面右側的任務按鈕（如果你有用 <button>） */
+button {
+    color: #5B3A1E !important;
+}
+
+/* 任務側欄的文字也改色系 */
+.mission-panel li {
+    color: #5B3A1E;
+}
+
+/* 優惠券頁面的文字 */
+.coupon h3, .coupon p {
+    color: #5B3A1E;
+}
+
+/* Profile 頁面的字 */
+.profile-box, .profile-box p, .profile-box h2 {
+    color: #5B3A1E;
+}
+
+/* Settings 頁面 */
+.topbar {
+    background: #C4A169; /* 淺木頭風金棕色 */
+    color: #5B3A1E !important;
+}
+.topbar a {
+    color: #5B3A1E !important;
+}
+
+/* 輸入框 placeholder（登入頁）*/
+.input-wood::placeholder {
+    color: #8A6A3F;
+}
+/* ======================
+   返回按鈕 - 右下角版本
+   ====================== */
+.btn-back {
+    position: fixed;
+    bottom: 20px;      /* ⭐ 距離底部固定 */
+    right: 20px;       /* ⭐ 距離右邊固定 */
+
+    background: #f2e3c2;
+    border: 2px solid #c1a075;
+    border-radius: 10px;
+
+    width: 85px;
+    height: 40px;
+
+    font-size: 15px;
+    font-weight: bold;
+    color: #5B3A1E;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    transition: 0.15s;
+    z-index: 9999;   /* ⭐ 確保永遠在最上層 */
+}
+
+.btn-back:hover {
+    background: #e7d5ae;
+    transform: scale(1.05);
+}
+
+
+.btn-back:hover {
+    background: #e7d5ae;
+    transform: translateX(-2px);
+}
+
+
+.btn-back:hover {
+    background: #e7d2a8;
+    transform: translateX(-3px);
+}
+
+
+/* =============================
+   Settings box
+   ============================= */
+.settings-box {
+    width: 380px;
+    margin: 80px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 20px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.settings-box label {
+    color: #5B3A1E;
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    text-align: left;
+}
+
+
+/* 修正 p 的預設藍色（避免超連結、預設顏色污染） */
+p, label, h2 {
+    color: #5B3A1E !important;
+}
+
+/* Settings 風格加強 */
+.settings-box {
+    width: 380px;
+    margin: 80px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 20px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    text-align: center;
+}
