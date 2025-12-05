@@ -276,25 +276,35 @@ async function initMap() {
 
 
 
-// ================================================
-// 任務側欄
-// ================================================
-async function loadTaskPanel() {
-    const res = await fetch(`${API_BASE}/tasks`);
-    const tasks = await res.json();
+// ===========================
+// 在像素地圖上產生任務點
+// ===========================
+function loadTaskPanel() {
+    fetch(`${API_BASE}/tasks`)
+        .then(res => res.json())
+        .then(tasks => {
+            const container = document.getElementById("taskPoints");
+            container.innerHTML = "";
 
-    const list = document.getElementById("taskList");
-    if (!list) return;
+            tasks.forEach(t => {
+                const marker = document.createElement("div");
+                marker.className = "task-marker";
 
-    list.innerHTML = "";
+                // ⭐ 使用 t.x, t.y 來定位（百分比）
+                marker.style.left = t.x + "%";
+                marker.style.top = t.y + "%";
 
-    tasks.forEach(t => {
-        const li = document.createElement("li");
-        li.textContent = `${t.name}｜${t.reward}`;
-        li.onclick = () => completeTaskFromPanel(t.id);
-        list.appendChild(li);
-    });
+                marker.onclick = () => {
+                    if (confirm(`前往任務：${t.name}？`)) {
+                        completeTask(t.id);
+                    }
+                };
+
+                container.appendChild(marker);
+            });
+        });
 }
+
 
 async function completeTaskFromPanel(taskId) {
     const username = getCurrentUser();

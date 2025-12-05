@@ -1,40 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <title>DeepSK 地圖任務</title>
-
+    <meta charset="UTF-8" />
+    <title>DeepSK Map</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 
-<!-- ⭐ 不加 bg-paper，版面就比較像原本 -->
-<body onload="initBGM(); checkLogin(); initMap(); loadTaskPanel();">
+<body class="bg-paper">
 
-<!-- 返回上一頁 -->
-<button class="btn-back" onclick="history.back()">← 返回</button>
+    <!-- 返回鍵 -->
+    <button class="btn-back" onclick="window.location.href='home.html'">← 返回</button>
 
-<!-- 上方標題列（跟之前一樣風格） -->
-<div class="topbar">
-    <span>DeepSK 任務地圖</span>
-    <a href="coupon.html">Coupons</a>
-    <a href="settings.html">設定</a>
-</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-<!-- 左地圖 + 右任務區 -->
-<div class="layout">
-    <div id="map"></div>
-
-    <aside class="mission-panel">
-        <h2>任務區 Mission Area</h2>
-        <ul id="taskList"></ul>
-    </aside>
-</div>
-
-<script src="main.js"></script>
-
+    <script src="game.js"></script>
 </body>
 </html>

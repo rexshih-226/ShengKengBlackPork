@@ -256,3 +256,40 @@ p, label, h2 {
     box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
     text-align: center;
 }
+/* ========================
+   像素風地圖背景
+   ======================== */
+.pixel-map {
+    width: 100%;
+    height: calc(100vh - 60px); /* 扣掉 topbar */
+    background-image: url("茶園地圖.png"); /* 你的圖片 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+
+/* 任務點 icon */
+.task-marker {
+    width: 32px;
+    height: 32px;
+    background: url("pin.png"); /* 你之後可以換成茶葉標記 */
+    background-size: cover;
+    position: absolute;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+}
+/* 讓 canvas 佔滿整個畫面 */
+.game-wrapper {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+}
+
+/* Canvas 自動調整大小，保留比例 */
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
