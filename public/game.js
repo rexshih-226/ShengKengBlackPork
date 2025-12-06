@@ -1,45 +1,43 @@
 // ===============================
-// DeepSK RPG – 顯示角色 + 移動 + 持續動畫
+// Canvas 初始化
 // ===============================
-
-// Canvas
 const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-// ------------------------------
-// 地圖載入
-// ------------------------------
+// ===============================
+// 載入圖片
+// ===============================
 const mapImg = new Image();
-mapImg.src = "map.png";
+mapImg.src = "map.jpg";
 
-// ------------------------------
-// 角色動畫載入
-// ------------------------------
-const frameFiles = [
+const maskImg = new Image();
+maskImg.src = "mask.jpg"; // 黑色 = 可走 (重要)
+
+const characterFrames = [
     "character1.PNG",
     "character2.PNG",
     "character3.PNG",
     "character4.PNG"
 ];
 
-const playerFrames = frameFiles.map(src => {
-    const img = new Image();
+const characterImgs = [];
+characterFrames.forEach(src => {
+    let img = new Image();
     img.src = src;
-    return img;
+    characterImgs.push(img);
 });
 
-// ------------------------------
-// 玩家資料
-// ------------------------------
+// ===============================
+// 角色
+// ===============================
 let player = {
-    x: 300,
-    y: 380,
-    size: 80,
+    x: 820,   // ✔ 出生點位於大路左下角（黑線上）
+    y: 810,
     speed: 4,
-
-    frameIndex: 0,
-    frameTimer: 0,
-    frameSpeed: 6
+    size: 80,
+    frame: 0,
+    dir: 1,
+    timer: 0
 };
 
 // ===============================
@@ -56,55 +54,93 @@ function updateCamera() {
 }
 
 // ===============================
-// 鍵盤移動
+// Mask 用來做像素碰撞判定
+// ===============================
+const maskCanvas = document.createElement("canvas");
+const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
+
+let maskLoaded = false;
+
+maskImg.onload = () => {
+    maskCanvas.width = maskImg.width;
+    maskCanvas.height = maskImg.height;
+    maskCtx.drawImage(maskImg, 0, 0);
+    maskLoaded = true;
+};
+
+// ===============================
+// 黑色像素 = 可以走
+// ===============================
+function canWalk(x, y) {
+    if (!maskLoaded) return false;
+
+    // 防止出界
+    if (x < 0 || y < 0 || x >= maskCanvas.width || y >= maskCanvas.height)
+        return false;
+
+    const pixel = maskCtx.getImageData(x, y, 1, 1).data;
+    let r = pixel[0], g = pixel[1], b = pixel[2];
+
+    // 黑色
+    return (r < 30 && g < 30 && b < 30);
+}
+
+// ===============================
+// 移動
+// ===============================
+function move(dx, dy) {
+    let nx = player.x + dx;
+    let ny = player.y + dy;
+
+    if (canWalk(nx, ny)) {
+        player.x = nx;
+        player.y = ny;
+    }
+}
+
+// ===============================
+// 角色動畫（站著也動）
+// ===============================
+function updateAnimation() {
+    player.timer++;
+
+    if (player.timer > 6) {
+        player.frame += player.dir;
+
+        if (player.frame === 3) player.dir = -1;
+        if (player.frame === 0) player.dir = 1;
+
+        player.timer = 0;
+    }
+}
+
+// ===============================
+// 鍵盤控制
 // ===============================
 const keys = {};
 document.addEventListener("keydown", e => keys[e.key] = true);
 document.addEventListener("keyup", e => keys[e.key] = false);
 
-function movePlayer() {
-    if (keys["ArrowUp"] || keys["w"]) player.y -= player.speed;
-    if (keys["ArrowDown"] || keys["s"]) player.y += player.speed;
-    if (keys["ArrowLeft"] || keys["a"]) player.x -= player.speed;
-    if (keys["ArrowRight"] || keys["d"]) player.x += player.speed;
-}
-
-// ===============================
-// 持續動畫（不管有無移動）
-// ===============================
-let animationOrder = [0, 1, 2, 3, 2, 1];
-
-function updateAnimation() {
-    player.frameTimer++;
-
-    if (player.frameTimer >= player.frameSpeed) {
-        player.frameTimer = 0;
-
-        player.frameIndex++;
-        if (player.frameIndex >= animationOrder.length) {
-            player.frameIndex = 0;
-        }
-    }
-}
-
 // ===============================
 // 主遊戲迴圈
 // ===============================
 function gameLoop() {
+    if (keys["ArrowUp"]) move(0, -player.speed);
+    if (keys["ArrowDown"]) move(0, player.speed);
+    if (keys["ArrowLeft"]) move(-player.speed, 0);
+    if (keys["ArrowRight"]) move(player.speed, 0);
 
-    movePlayer();     // 移動角色
-    updateCamera();   // 更新鏡頭
-    updateAnimation(); // ⭐ 始終更新動畫（不管移動與否）
+    updateAnimation();
+    updateCamera();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 畫地圖
+    // 地圖
     ctx.drawImage(mapImg, -camera.x, -camera.y);
 
-    // 畫角色
-    const frame = playerFrames[animationOrder[player.frameIndex]];
+    // 角色
     ctx.drawImage(
-        frame,
+        characterImgs[player.frame],
         player.x - camera.x - player.size / 2,
         player.y - camera.y - player.size / 2,
         player.size,
@@ -114,9 +150,6 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// ===============================
-// 開始遊戲
-// ===============================
 mapImg.onload = () => {
     requestAnimationFrame(gameLoop);
 };

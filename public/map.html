@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8" />
-    <title>DeepSK Map</title>
+    <meta charset="UTF-8">
+    <title>DeepSK Pixel Map</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-paper">
+<body>
 
-    <!-- 返回鍵 -->
-    <button class="btn-back" onclick="window.location.href='home.html'">← 返回</button>
+<!-- 返回鍵 -->
+<button class="btn-back" onload="initBGM();"onclick="history.back()">← 返回</button>
 
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+<!-- 遊戲畫布 -->
+<canvas id="gameCanvas" width="1560" height="915"></canvas>
 
-    <script src="game.js"></script>
+<!-- 遊戲邏輯 -->
+<script src="game.js"></script>
+
 </body>
 </html>

@@ -22,6 +22,37 @@
         <li>可在 Settings 調整音樂與暱稱</li>
     </ul>
 </div>
+<script>
+let bgm;
+
+function initBGM() {
+    // 若背景音樂已存在則不再重播
+    if (localStorage.getItem("bgmPlaying") === "true") {
+        // 若其他頁面已建立 bgm 就不要再創
+        return;
+    }
+
+    // 建立全域音樂
+    bgm = new Audio("bgm.mp3");
+    bgm.loop = true;
+    bgm.volume = 0.5;
+
+    // 播放並記錄狀態
+    bgm.play();
+    localStorage.setItem("bgmPlaying", "true");
+
+    // 把音樂物件放到 window ，跨頁不消失
+    window.bgm = bgm;
+}
+
+// 網頁載入後，若 window 已有 bgm，表示已經播放過
+window.addEventListener("DOMContentLoaded", () => {
+    if (window.bgm) {
+        // 已有音樂 → 不要重新播放
+        localStorage.setItem("bgmPlaying", "true");
+    }
+});
+</script>
 
 <script src="main.js"></script>
 </body>
