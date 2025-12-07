@@ -2,20 +2,153 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>Coupons</title>
+    <title>優惠卷 - DeepSK</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .coupon-container {
+            max-width: 900px;
+            margin: 60px auto 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .coupon-title-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .coupon-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        .coupon-title {
+            font-size: 32px;
+            color: #7a6229;
+            font-weight: bold;
+        }
+
+        .coupon-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .coupon-table th {
+            background: #8B7355;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #6B5344;
+        }
+
+        .coupon-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #D4AF8D;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .coupon-table tr:nth-child(even) td {
+            background: rgba(245, 235, 220, 0.6);
+        }
+
+        .coupon-table tr:hover td {
+            background: rgba(220, 210, 195, 0.5);
+        }
+    </style>
 </head>
-<body onload="loadCoupons()">
+<body class="bg-paper">
 
-<div class="topbar">
-    <span>你的優惠券</span>
-    <a href="map.html">地圖</a>
-    <a href="settings.html">設定</a>
-</div>
+    <!-- 返回按鈕 -->
+    <button class="btn-back" onclick="window.location.href='profile.html'">← 返回</button>
 
-<div class="container" id="coupon-list"></div>
+    <!-- 優惠卷容器 -->
+    <div class="coupon-container">
+        <!-- 標題區域 -->
+        <div class="coupon-title-section">
+            <img src="Coupon icon.PNG" class="coupon-icon" alt="優惠卷圖示">
+            <h1 class="coupon-title">你的優惠卷</h1>
+        </div>
 
-<script src="main.js"></script>
+        <!-- 優惠卷表格 -->
+        <table class="coupon-table">
+            <thead>
+                <tr>
+                    <th>優惠卷序號</th>
+                    <th>優惠卷名稱</th>
+                    <th>獲得日期</th>
+                    <th>使用期限</th>
+                    <th>是否已使用</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="main.js"></script>
 
 </body>
 </html>
