@@ -8,21 +8,29 @@
 
 <body class="bg-paper" onload="initBGM(); checkLogin(); showUser();">
 
-<!-- ⭐ 返回首頁（小型木頭風按鈕） -->
-<button class="btn-back" onclick="window.location.href='home.html'">← 返回</button>
+<!-- ⭐ 返回：依來源決定 home 或 game -->
+<button class="btn-back" id="btnBack">← 返回</button>
 
 <div class="profile-box">
 
     <h2>Player Profile</h2>
     <p id="username-info"></p>
 
-    <button class="btn-wood" onclick="window.location.href='coupon.html'">My Coupons</button>
+    <button class="btn-wood" id="btnCoupon">My Coupons</button>
 
     <button class="btn-wood" onclick="logout()">Logout</button>
 
 </div>
 
 <script src="main.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get('from') === 'game' ? 'game' : 'home';
+    const backTarget = from === 'game' ? 'game.html' : 'home.html';
+
+    document.getElementById('btnBack').onclick = () => { window.location.href = backTarget; };
+    document.getElementById('btnCoupon').onclick = () => { window.location.href = `coupon.html?from=${from}`; };
+</script>
 
 </body>
 </html>

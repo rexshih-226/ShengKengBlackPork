@@ -9,8 +9,8 @@
 <!-- ⭐ 同時載入暱稱 + 音樂狀態 -->
 <body class="bg-paper" onload="loadSettingsPage(); initBGM(); checkLogin();">
 
-<!-- 返回上一頁（木頭風按鈕） -->
-<button class="btn-back" onclick="history.back()">← 返回</button>
+<!-- ⭐ 返回：依來源決定 home 或 game -->
+<button class="btn-back" id="btnBack">← 返回</button>
 
 <div class="settings-box">
 
@@ -44,6 +44,13 @@
 </div>
 
 <script src="main.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get('from') === 'game' ? 'game' : 'home';
+    const backTarget = from === 'game' ? 'game.html' : 'home.html';
+
+    document.getElementById('btnBack').onclick = () => { window.location.href = backTarget; };
+</script>
 
 </body>
 </html>

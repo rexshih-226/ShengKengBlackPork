@@ -121,7 +121,7 @@ button:hover {
 
 /* 左上角個人資訊按鈕 */
 .user-icon img {
-    width: 60px;
+    width: 80px;  /* ⭐ 放大至 80px */
 }
 .user-icon {
     position: absolute;

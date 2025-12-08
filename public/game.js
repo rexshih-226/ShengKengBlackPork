@@ -66,6 +66,18 @@ let player = {
     nearTask: null  // 附近的任務 ID
 };
 
+// 紀錄目前角色座標，供離開頁面後復原
+function storePlayerPosition() {
+    localStorage.setItem('playerX', player.x);
+    localStorage.setItem('playerY', player.y);
+}
+
+// 導航前先存位子，再換頁
+function navigateWithPosition(url) {
+    storePlayerPosition();
+    window.location.href = url;
+}
+
 // ===============================
 // 鏡頭 Camera
 // ===============================
@@ -130,7 +142,7 @@ function move(dx, dy) {
 function updateAnimation() {
     player.timer++;
 
-    if (player.timer > 6) {
+    if (player.timer > 12) {  // ⭐ 改為 12 使動畫更慢
         player.frame += player.dir;
 
         if (player.frame === 3) player.dir = -1;
@@ -177,9 +189,7 @@ function checkNearTask() {
 // 進入任務小遊戲
 // ===============================
 function enterTask(taskId) {
-    // 存儲玩家位置，返回時使用
-    localStorage.setItem('playerX', player.x);
-    localStorage.setItem('playerY', player.y);
+    storePlayerPosition();
 
     // 根據不同 taskId 導向不同的任務頁面
     const taskPages = {
@@ -285,6 +295,9 @@ function gameLoop() {
         player.size
     );
 
+    // 繪製小地圖
+    drawMinimap();
+
     requestAnimationFrame(gameLoop);
 }
 
@@ -292,6 +305,9 @@ function gameLoop() {
 // 初始化遊戲
 // ===============================
 function initGame() {
+    // 初始化小地圖 canvas
+    initMinimapCanvas();
+    
     // 檢查是否從任務頁面返回
     const savedX = localStorage.getItem('playerX');
     const savedY = localStorage.getItem('playerY');
@@ -302,6 +318,9 @@ function initGame() {
         localStorage.removeItem('playerX');
         localStorage.removeItem('playerY');
     }
+    
+    // ⭐ 立即更新相機到角色位置，避免初始視角在地圖中心
+    updateCamera();
 
     requestAnimationFrame(gameLoop);
 }
@@ -309,3 +328,93 @@ function initGame() {
 mapImg.onload = () => {
     initGame();
 };
+
+// 供 body onload 呼叫（避免未定義）
+function startGame() {
+    initGame();
+}
+
+// ===============================
+// 小地圖（右上角固定）
+// ===============================
+const MINIMAP_WIDTH = 180;
+const MINIMAP_HEIGHT = 140;
+
+// 用 Canvas 繪製小地圖至隱藏 canvas，然後轉成圖片放入 div
+let minimapCanvas = null;
+let minimapCtx = null;
+
+function initMinimapCanvas() {
+    minimapCanvas = document.createElement('canvas');
+    minimapCanvas.width = MINIMAP_WIDTH;
+    minimapCanvas.height = MINIMAP_HEIGHT;
+    minimapCtx = minimapCanvas.getContext('2d', { willReadFrequently: true });
+}
+
+function drawMinimapToDiv() {
+    if (!minimapCanvas) initMinimapCanvas();
+    
+    // 清空
+    minimapCtx.clearRect(0, 0, MINIMAP_WIDTH, MINIMAP_HEIGHT);
+    
+    // 檢查圖片是否已加載
+    if (!mapImg.complete || mapImg.naturalWidth <= 0) {
+        return; // 圖片未加載，跳過繪製
+    }
+    
+    // 繪製縮小的地圖背景
+    const scaleX = MINIMAP_WIDTH / mapWidth;
+    const scaleY = MINIMAP_HEIGHT / mapHeight;
+    minimapCtx.drawImage(
+        mapImg,
+        0, 0, mapWidth, mapHeight,
+        0, 0, MINIMAP_WIDTH, MINIMAP_HEIGHT
+    );
+    
+    // 檢查地標圖片是否已加載
+    if (landmarkImg.complete && landmarkImg.naturalWidth > 0) {
+        // 繪製任務指標（小小的）
+        const landmarkSizeMini = 8;
+        for (let task of tasks) {
+            const pos = getTaskPixelPos(task);
+            const minimapX = pos.px * scaleX;
+            const minimapY = pos.py * scaleY;
+            minimapCtx.drawImage(
+                landmarkImg,
+                minimapX - landmarkSizeMini / 2,
+                minimapY - landmarkSizeMini / 2,
+                landmarkSizeMini,
+                landmarkSizeMini
+            );
+        }
+    }
+    
+    // 繪製玩家位置（紅點）
+    const playerMinimapX = player.x * scaleX;
+    const playerMinimapY = player.y * scaleY;
+    minimapCtx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+    minimapCtx.beginPath();
+    minimapCtx.arc(playerMinimapX, playerMinimapY, 5, 0, Math.PI * 2);
+    minimapCtx.fill();
+    minimapCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    minimapCtx.lineWidth = 1;
+    minimapCtx.stroke();
+    
+    // 將 canvas 轉成圖片當作背景
+    const minimapDiv = document.getElementById('minimapContainer');
+    if (minimapDiv) {
+        minimapDiv.style.backgroundImage = 'url(' + minimapCanvas.toDataURL() + ')';
+        minimapDiv.style.backgroundSize = 'cover';
+        minimapDiv.style.backgroundPosition = 'center';
+    }
+}
+
+function drawMinimap() {
+    drawMinimapToDiv();
+}
+
+// 小地圖點擊進入全圖頁面
+function openFullMap() {
+    storePlayerPosition();
+    window.location.href = 'fullmap.html';
+}

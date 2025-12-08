@@ -4,14 +4,93 @@
     <meta charset="UTF-8">
     <title>DeepSK Pixel Map</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 防止頁面滾動 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2c2416;
+        }
+        #gameCanvas {
+            display: block;
+            image-rendering: pixelated;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 
 <body onload="startGame()">
 
-<button class="btn-back" onload="initBGM();" onclick="window.location.href='home.html'">← 返回</button>
+<style>
+    .hud-dock {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        background: rgba(212, 184, 150, 0.9);
+        border: 2px solid #c3a178;
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 500;
+    }
+    .hud-dock button {
+        width: 42px;
+        height: 42px;
+        border: none;
+        background: rgba(255,255,255,0.8);
+        border-radius: 10px;
+        padding: 4px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hud-dock button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+    .hud-dock img { width: 100%; height: 100%; object-fit: contain; }
+</style>
+
+<div class="hud-dock">
+    <button onclick="navigateWithPosition('profile.html?from=game')">
+        <img src="Profile.PNG" alt="profile">
+    </button>
+    <button onclick="navigateWithPosition('home.html')">
+        <img src="Homepage icon.PNG" alt="home">
+    </button>
+    <button onclick="navigateWithPosition('settings.html?from=game')">
+        <img src="Settings icon.PNG" alt="settings">
+    </button>
+    <button onclick="navigateWithPosition('coupon.html?from=game')">
+        <img src="Coupon icon.PNG" alt="coupon">
+    </button>
+</div>
 
 <canvas id="gameCanvas" width="900" height="600"></canvas>
 
-<script src="game.js"></script> 
+<!-- 小地圖固定容器 -->
+<div id="minimapContainer" style="
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    width: 190px;
+    height: 160px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 400;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    background-size: contain;
+    background-position: top;
+    background-repeat: no-repeat;
+" onclick="openFullMap()"></div>
+
+<script src="game.js"></script>
 </body>
 </html>

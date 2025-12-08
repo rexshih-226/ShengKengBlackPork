@@ -87,7 +87,7 @@
 <body class="bg-paper">
 
     <!-- 返回按鈕 -->
-    <button class="btn-back" onclick="window.location.href='profile.html'">← 返回</button>
+    <button class="btn-back" id="btnBack">← 返回</button>
 
     <!-- 優惠卷容器 -->
     <div class="coupon-container">
@@ -149,6 +149,13 @@
     </div>
 
     <script src="main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from') === 'game' ? 'game' : 'home';
+        const backTarget = from === 'game' ? 'game.html' : 'home.html';
+
+        document.getElementById('btnBack').onclick = () => { window.location.href = backTarget; };
+    </script>
     <script>
         (function renderCoupons() {
             const username = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;

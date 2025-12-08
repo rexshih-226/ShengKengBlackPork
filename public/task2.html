@@ -83,7 +83,11 @@
         .wind-bar-container {
             position: relative; width: 400px; height: 40px;
             margin: 0 auto 16px;
-            background: linear-gradient(to right, #e74c3c 0%, #e74c3c 20%, #2ecc71 20%, #2ecc71 80%, #e74c3c 80%, #e74c3c 100%);
+            /* 綠色區域縮小為中間 10% */
+            background: linear-gradient(to right,
+                #e74c3c 0%, #e74c3c 45%,
+                #2ecc71 45%, #2ecc71 55%,
+                #e74c3c 55%, #e74c3c 100%);
             border-radius: 20px; overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
@@ -226,7 +230,7 @@
             
             stopGame();
             
-            if (position >= 20 && position <= 80) {
+            if (position >= 45 && position <= 55) {
                 const res = awardCoupon();
                 resultEl.className = 'result success';
                 

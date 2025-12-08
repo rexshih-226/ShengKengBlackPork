@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>Deep Shen Map - DeepSK</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .fullmap-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: #f3e8ce;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+
+        .fullmap-title {
+            font-size: 36px;
+            color: #7a6229;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .fullmap-canvas-wrapper {
+            position: relative;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            width: 800px;
+            aspect-ratio: 4 / 3;
+        }
+
+        #fullmapCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .btn-back-fullmap {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #f2e3c2;
+            border: 2px solid #c1a075;
+            border-radius: 10px;
+            width: 85px;
+            height: 40px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #5B3A1E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+            transition: 0.15s;
+            z-index: 10000;
+        }
+
+        .btn-back-fullmap:hover {
+            background: #e7d5ae;
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+
+<body class="bg-paper">
+    <!-- 返回按鈕 -->
+    <button class="btn-back-fullmap" onclick="goBackToGame()">← 返回</button>
+
+    <div class="fullmap-container">
+        <h1 class="fullmap-title">Shenkeng Map</h1>
+        
+        <div class="fullmap-canvas-wrapper" id="mapWrapper" style="background-image: url('map.jpg'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+            <canvas id="playerMarker" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="game.js"></script>
+    <script>
+        function drawPlayerMarker() {
+            const canvas = document.getElementById('playerMarker');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const wrapper = document.getElementById('mapWrapper');
+            if (!wrapper) return;
+            
+            // 根據容器的實際寬高設定 canvas
+            const canvasWidth = wrapper.offsetWidth;
+            const canvasHeight = wrapper.offsetHeight;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            // 清空canvas
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // 檢查玩家物件
+            if (typeof player === 'undefined' || !player) {
+                console.log('玩家位置未加載');
+                return;
+            }
+            
+            // 計算縮放比例
+            const scaleX = canvasWidth / mapWidth;
+            const scaleY = canvasHeight / mapHeight;
+            
+            // 繪製玩家位置（紅點）
+            const playerScreenX = player.x * scaleX;
+            const playerScreenY = player.y * scaleY;
+            
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
+            ctx.beginPath();
+            ctx.arc(playerScreenX, playerScreenY, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        
+        // 在頁面加載後繪製
+        window.addEventListener('load', function() {
+            // 等待 game.js 初始化完成後再繪製
+            setTimeout(function() {
+                console.log('繪製玩家標記, player:', typeof player !== 'undefined' ? player : 'undefined');
+                drawPlayerMarker();
+            }, 500);
+        });
+        
+        // 監聽窗口大小改變，重新繪製
+        window.addEventListener('resize', function() {
+            drawPlayerMarker();
+        });
+        
+        // 返回遊戲
+        function goBackToGame() {
+            try {
+                if (typeof player !== 'undefined' && player) {
+                    localStorage.setItem('playerX', player.x.toString());
+                    localStorage.setItem('playerY', player.y.toString());
+                }
+            } catch (e) {
+                console.error('保存位置失敗:', e);
+            }
+            window.location.href = 'game.html';
+        }
+    </script>
+</body>
+</html>
