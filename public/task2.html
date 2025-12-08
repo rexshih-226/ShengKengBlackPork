@@ -4,20 +4,11 @@
     <meta charset="UTF-8">
     <title>萎凋之風・青氣散盡的試煉</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Noto Sans TC", sans-serif;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Noto Sans TC", sans-serif; overflow: hidden; }
 
         .task-container {
-            width: 100vw;
-            height: 100vh;
+            width: 100vw; height: 100vh;
             background-image: url('任務二.png');
             background-size: cover;
             background-position: center;
@@ -25,60 +16,267 @@
         }
 
         .btn-back {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            font-size: 16px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 100;
+            position: absolute; top: 20px; left: 20px;
+            padding: 10px 15px; font-size: 16px;
+            background: rgba(0, 0, 0, 0.6); color: white;
+            border: none; border-radius: 8px;
+            cursor: pointer; z-index: 200;
             transition: background 0.3s;
         }
+        .btn-back:hover { background: rgba(0, 0, 0, 0.8); }
 
-        .btn-back:hover {
-            background: rgba(0, 0, 0, 0.8);
+        .modal {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(880px, 90vw); padding: 32px 36px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 18px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            text-align: center;
+        }
+        .modal.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+        .line { opacity: 0; transition: opacity 0.6s ease; text-align: center; color: #1f1b16; }
+        .line.show { opacity: 1; }
+        .title { font-size: 28px; font-weight: 800; letter-spacing: 1px; }
+        .subtitle { font-size: 20px; margin-top: 8px; color: #4a3c2a; }
+
+        .btn-continue {
+            margin: 20px auto 10px; display: block;
+            padding: 10px 22px; font-size: 16px;
+            color: #fff; background: #3a7bf4;
+            border: none; border-radius: 12px;
+            cursor: pointer; opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .btn-continue.show { opacity: 1; }
+        .btn-continue.blink { animation: blink 1s infinite; }
+        .btn-continue:disabled { cursor: not-allowed; opacity: 0.7; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .story {
+            margin: 10px auto 12px; line-height: 1.6;
+            font-size: 16px; color: #2c241c;
+            opacity: 0; transition: opacity 0.6s ease;
+            text-align: center;
+        }
+        .story.show { opacity: 1; }
+
+        .prompt {
+            margin-top: 12px; font-size: 18px;
+            font-weight: 700; color: #2f1f12;
+            opacity: 0; transition: opacity 0.6s ease;
+            text-align: center;
+        }
+        .prompt.show { opacity: 1; }
+
+        .wind-game {
+            margin: 20px auto; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .wind-game.show { opacity: 1; }
+
+        .wind-bar-container {
+            position: relative; width: 400px; height: 40px;
+            margin: 0 auto 16px;
+            background: linear-gradient(to right, #e74c3c 0%, #e74c3c 20%, #2ecc71 20%, #2ecc71 80%, #e74c3c 80%, #e74c3c 100%);
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .task-title {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            z-index: 100;
+        .wind-indicator {
+            position: absolute; left: 0; top: 0;
+            width: 4px; height: 100%;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+            transition: left 0.05s linear;
         }
 
-        .task-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        .btn-stop {
+            padding: 12px 28px; font-size: 18px;
+            font-weight: 700; color: #fff;
+            background: #3a7bf4; border: none;
+            border-radius: 12px; cursor: pointer;
+            transition: background 0.3s;
         }
+        .btn-stop:hover { background: #2f68d1; }
+        .btn-stop:disabled { cursor: not-allowed; opacity: 0.6; }
+
+        .result { margin-top: 12px; font-size: 16px; font-weight: 700; text-align: center; min-height: 22px; }
+        .result.success { color: #2ecc71; }
+        .result.error { color: #e74c3c; }
     </style>
 </head>
 <body>
     <div class="task-container">
         <button class="btn-back" onclick="goBack()">← 返回</button>
-        <div class="task-title">萎凋之風・青氣散盡的試煉</div>
-        <div class="task-content">
+
+        <div class="modal" id="modal">
+            <div class="line title" id="lineTitle">任務 2：萎凋之風・青氣散盡的試煉</div>
+            <div class="line subtitle" id="lineSubtitle">日光萎凋、室內萎凋</div>
+            <button id="btnContinue" class="btn-continue">繼續</button>
+
+            <div id="story" class="story"></div>
+            <div id="prompt" class="prompt"></div>
+            
+            <div id="windGame" class="wind-game">
+                <div class="wind-bar-container">
+                    <div class="wind-indicator" id="indicator"></div>
+                </div>
+                <button id="btnStop" class="btn-stop">停止萎凋</button>
+            </div>
+
+            <div id="result" class="result"></div>
         </div>
     </div>
 
+    <script src="main.js"></script>
     <script>
-        function goBack() {
-            window.location.href = 'game.html';
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+        const modal = document.getElementById('modal');
+        const lineTitle = document.getElementById('lineTitle');
+        const lineSubtitle = document.getElementById('lineSubtitle');
+        const btnContinue = document.getElementById('btnContinue');
+        const story = document.getElementById('story');
+        const promptEl = document.getElementById('prompt');
+        const windGame = document.getElementById('windGame');
+        const indicator = document.getElementById('indicator');
+        const btnStop = document.getElementById('btnStop');
+        const resultEl = document.getElementById('result');
+
+        let animationId = null;
+        let position = 0;
+        let direction = 1;
+        let gameStarted = false;
+
+        async function startSequence() {
+            await sleep(1000);
+            modal.classList.add('show');
+            await sleep(300);
+            lineTitle.classList.add('show');
+            await sleep(500);
+            lineSubtitle.classList.add('show');
+            await sleep(600);
+            btnContinue.classList.add('show', 'blink');
         }
+
+        function getCouponStoreKey() {
+            const user = (typeof getCurrentUser === 'function' && getCurrentUser()) || 'guest';
+            return `coupons:${user}`;
+        }
+
+        function loadCouponsData() {
+            return JSON.parse(localStorage.getItem(getCouponStoreKey()) || '{}');
+        }
+
+        function saveCouponsData(data) {
+            localStorage.setItem(getCouponStoreKey(), JSON.stringify(data));
+        }
+
+        function awardCoupon() {
+            const data = loadCouponsData();
+            const now = Date.now();
+            const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+            if (data['2']) return { already: true };
+
+            data['2'] = {
+                name: '茶園導覽免費體驗券',
+                obtainedAt: now,
+                expiresAt: now + thirtyDays,
+                used: false
+            };
+
+            saveCouponsData(data);
+            return { already: false };
+        }
+
+        function startWindGame() {
+            gameStarted = true;
+            
+            function animate() {
+                position += direction * 0.8;
+                
+                if (position >= 100) { position = 100; direction = -1; }
+                else if (position <= 0) { position = 0; direction = 1; }
+                
+                indicator.style.left = position + '%';
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function stopGame() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            gameStarted = false;
+            btnStop.disabled = true;
+        }
+
+        btnStop.addEventListener('click', () => {
+            if (!gameStarted) return;
+            
+            stopGame();
+            
+            if (position >= 20 && position <= 80) {
+                const res = awardCoupon();
+                resultEl.className = 'result success';
+                
+                if (res.already) {
+                    resultEl.textContent = '你已經領取過優惠卷';
+                } else {
+                    resultEl.textContent = '答對了';
+                    setTimeout(() => { resultEl.textContent = '你已成功獲得本關優惠券'; }, 800);
+                }
+            } else {
+                resultEl.className = 'result error';
+                resultEl.textContent = '答錯了，風速不在綠色區域內';
+                setTimeout(() => {
+                    position = 0; direction = 1;
+                    btnStop.disabled = false;
+                    resultEl.textContent = '';
+                    startWindGame();
+                }, 2000);
+            }
+        });
+
+        async function typeText(el, text, delay = 35) {
+            el.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                el.innerHTML += (text[i] === '\n') ? '<br>' : text[i];
+                await sleep(delay);
+            }
+        }
+
+        async function onContinue() {
+            btnContinue.classList.remove('blink');
+            btnContinue.disabled = true;
+            story.classList.add('show');
+
+            const text = `茶葉需要經歷「日光之風」與「室內之息」的雙重洗禮。\n當暖陽驅散水氣、微風翻動葉片的瞬間，茶中靈氣開始醱酵，香韻初現。\n此為包種茶香氣成形最重要的階段，也是茶魂覺醒的試煉。`;
+            await typeText(story, text, 35);
+
+            await sleep(300);
+            promptEl.textContent = '在綠色區域內按下【停止萎凋】';
+            promptEl.classList.add('show');
+
+            await sleep(400);
+            windGame.classList.add('show');
+            startWindGame();
+        }
+
+        function goBack() { window.location.href = 'game.html'; }
+
+        btnContinue.addEventListener('click', onContinue);
+        startSequence();
     </script>
 </body>
 </html>

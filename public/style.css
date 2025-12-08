@@ -92,17 +92,17 @@ button:hover {
     padding: 12px;
     margin: 10px 0;
     font-size: 20px;
-    color: #f7e7b3;
+    color: #5B3A1E;
     font-weight: bold;
     border: none;
     border-radius: 12px;
-    background: url('https://i.imgur.com/WuSz2xU.jpg');
-    background-size: cover;
+    background: #D4B896;
     cursor: pointer;
-    box-shadow: 0px 3px 6px rgba(0,0,0,0.3);
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.2);
+    transition: background 0.3s;
 }
 .btn-wood:hover {
-    opacity: 0.8;
+    background: #C9A876;
 }
 
 /* 木頭風輸入框 */

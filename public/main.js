@@ -78,6 +78,8 @@ function showUser() {
 let bgm = null;
 let musicOn = true;
 let firstClickListenerAdded = false;
+let bgmPersistTimer = null;
+const BGM_TIME_KEY = "bgmTime";
 
 function initBGM() {
     // 建立播放器（只建立一次）
@@ -85,6 +87,15 @@ function initBGM() {
         bgm = new Audio("bgm.mp3");
         bgm.loop = true;
         bgm.volume = 1.0;
+
+        // 嘗試從上次時間點恢復
+        const savedTime = parseFloat(localStorage.getItem(BGM_TIME_KEY) || "0") || 0;
+        bgm.addEventListener("loadedmetadata", () => {
+            const dur = bgm.duration || 0;
+            if (dur > 0 && savedTime < dur - 0.3) {
+                bgm.currentTime = savedTime;
+            }
+        });
     }
 
     // 讀取使用者設定
@@ -98,9 +109,18 @@ function initBGM() {
         musicOn = (saved === "true");
     }
 
+    const startPersist = () => {
+        if (bgmPersistTimer) return;
+        bgmPersistTimer = setInterval(() => {
+            if (bgm) {
+                localStorage.setItem(BGM_TIME_KEY, bgm.currentTime.toString());
+            }
+        }, 2000);
+    };
+
     // ⭐ 嘗試自動播放
     if (musicOn) {
-        bgm.play().catch(() => {
+        bgm.play().then(startPersist).catch(() => {
             console.log("⚠ 自動播放被阻擋，需要第一次點擊才啟動音樂");
 
             if (!firstClickListenerAdded) {
@@ -108,11 +128,18 @@ function initBGM() {
 
                 // ⭐ 使用者首次點擊 → 音樂立即播放
                 document.addEventListener("click", () => {
-                    if (musicOn) bgm.play();
+                    if (musicOn) bgm.play().then(startPersist);
                 }, { once: true });
             }
         });
     }
+
+    // 離開頁面前保存當前進度
+    window.addEventListener("beforeunload", () => {
+        if (bgm) {
+            localStorage.setItem(BGM_TIME_KEY, bgm.currentTime.toString());
+        }
+    });
 }
 
 // ⭐ Music ON / OFF 切換（Settings 用）
@@ -127,6 +154,11 @@ function toggleMusic() {
     } else {
         bgm.pause();
         btn.innerText = "Music: OFF";
+    }
+
+    // 儲存目前時間，避免切換造成重置
+    if (bgm) {
+        localStorage.setItem(BGM_TIME_KEY, bgm.currentTime.toString());
     }
 
     localStorage.setItem("musicOn", musicOn.toString());

@@ -149,6 +149,54 @@
     </div>
 
     <script src="main.js"></script>
+    <script>
+        (function renderCoupons() {
+            const username = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const formatTime = (ts) => ts ? new Date(ts).toLocaleString('zh-TW') : '';
+
+            let data = {};
+            if (username) {
+                const key = `coupons:${username}`;
+                data = JSON.parse(localStorage.getItem(key) || '{}');
+            }
+
+            // 按照獲得時間排序，先取得的排在最上面
+            const coupons = [];
+            for (let id in data) {
+                coupons.push({ id, ...data[id] });
+            }
+            coupons.sort((a, b) => a.obtainedAt - b.obtainedAt);
+
+            const rows = document.querySelectorAll('.coupon-table tbody tr');
+            
+            rows.forEach((row, idx) => {
+                const cells = row.querySelectorAll('td');
+                const c = coupons[idx];
+
+                cells[0].textContent = (idx + 1).toString();
+                if (c) {
+                    cells[1].textContent = c.name || '';
+                    cells[2].textContent = formatTime(c.obtainedAt);
+                    cells[3].textContent = formatTime(c.expiresAt);
+                    cells[4].textContent = c.used ? '已使用' : '未使用';
+                } else {
+                    cells[1].textContent = '';
+                    cells[2].textContent = '';
+                    cells[3].textContent = '';
+                    cells[4].textContent = '';
+                }
+            });
+
+            if (!username) {
+                const container = document.querySelector('.coupon-container');
+                const msg = document.createElement('p');
+                msg.textContent = '尚未登入，無法顯示優惠卷。';
+                msg.style.marginTop = '16px';
+                msg.style.color = '#7a6229';
+                container.appendChild(msg);
+            }
+        })();
+    </script>
 
 </body>
 </html>

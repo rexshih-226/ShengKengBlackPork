@@ -4,81 +4,212 @@
     <meta charset="UTF-8">
     <title>焙火終章・香韻覺醒（乾燥 + 焙火 + 成茶）</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Noto Sans TC", sans-serif;
-            overflow: hidden;
-        }
-
-        .task-container {
-            width: 100vw;
-            height: 100vh;
-            background-image: url('任務五.png');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .btn-back {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            font-size: 16px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 100;
-            transition: background 0.3s;
-        }
-
-        .btn-back:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .task-title {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            z-index: 100;
-        }
-
-        .task-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Noto Sans TC", sans-serif; overflow: hidden; }
+        .task-container { width: 100vw; height: 100vh; background-image: url('任務五.png'); background-size: cover; background-position: center; position: relative; }
+        .btn-back { position: absolute; top: 20px; left: 20px; padding: 10px 15px; font-size: 16px; background: rgba(0, 0, 0, 0.6); color: white; border: none; border-radius: 8px; cursor: pointer; z-index: 200; transition: background 0.3s; }
+        .btn-back:hover { background: rgba(0, 0, 0, 0.8); }
+        .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(880px, 90vw); max-height: 85vh; padding: 32px 36px; background: rgba(255, 255, 255, 0.8); border-radius: 18px; box-shadow: 0 12px 32px rgba(0,0,0,0.25); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.6s ease; text-align: center; overflow-y: auto; }
+        .modal.show { opacity: 1; }
+        .line { opacity: 0; transition: opacity 0.6s ease; color: #1f1b16; }
+        .line.show { opacity: 1; }
+        .title { font-size: 28px; font-weight: 800; }
+        .subtitle { font-size: 20px; margin-top: 8px; color: #4a3c2a; }
+        .btn-continue { margin: 20px auto 10px; display: block; padding: 10px 22px; font-size: 16px; color: #fff; background: #3a7bf4; border: none; border-radius: 12px; cursor: pointer; opacity: 0; transition: opacity 0.6s ease; }
+        .btn-continue.show { opacity: 1; }
+        .btn-continue.blink { animation: blink 1s infinite; }
+        .btn-continue:disabled { opacity: 0.7; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .story { margin: 10px auto 12px; line-height: 1.6; font-size: 16px; color: #2c241c; opacity: 0; transition: opacity 0.6s ease; }
+        .story.show { opacity: 1; }
+        .prompt { margin-top: 12px; font-size: 18px; font-weight: 700; color: #2f1f12; opacity: 0; transition: opacity 0.6s ease; }
+        .prompt.show { opacity: 1; }
+        .quiz { margin: 20px auto; opacity: 0; transition: opacity 0.4s ease; text-align: left; }
+        .quiz.show { opacity: 1; }
+        .question { margin-bottom: 20px; padding: 16px; background: rgba(255, 255, 255, 0.9); border-radius: 12px; }
+        .question-title { font-size: 16px; font-weight: 700; color: #1f1b16; margin-bottom: 10px; }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option { padding: 10px; border: 2px solid #ccc; border-radius: 8px; cursor: pointer; transition: border 0.3s, background 0.3s; }
+        .option:hover { background: rgba(58, 123, 244, 0.1); border-color: #3a7bf4; }
+        .option.selected { border-color: #3a7bf4; background: rgba(58, 123, 244, 0.2); }
+        .btn-submit { margin: 20px auto; display: block; padding: 12px 24px; font-size: 16px; color: #fff; background: #27ae60; border: none; border-radius: 12px; cursor: pointer; opacity: 0; transition: opacity 0.4s; }
+        .btn-submit.show { opacity: 1; }
+        .result { margin-top: 12px; font-size: 16px; font-weight: 700; min-height: 22px; }
+        .result.success { color: #2ecc71; }
+        .result.error { color: #e74c3c; }
     </style>
 </head>
 <body>
     <div class="task-container">
         <button class="btn-back" onclick="goBack()">← 返回</button>
-        <div class="task-title">焙火終章・香韻覺醒（乾燥 + 焙火 + 成茶）</div>
-        <div class="task-content">
+        <div class="modal" id="modal">
+            <div class="line title" id="lineTitle">任務 5：焙火終章・香韻覺醒</div>
+            <div class="line subtitle" id="lineSubtitle">乾燥 + 焙火 + 成茶</div>
+            <button id="btnContinue" class="btn-continue">繼續</button>
+            <div id="story" class="story"></div>
+            <div id="prompt" class="prompt"></div>
+            <div id="quiz" class="quiz"></div>
+            <button id="btnSubmit" class="btn-submit">提交答案</button>
+            <div id="result" class="result"></div>
         </div>
     </div>
-
+    <script src="main.js"></script>
     <script>
-        function goBack() {
-            window.location.href = 'game.html';
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        const modal = document.getElementById('modal');
+        const lineTitle = document.getElementById('lineTitle');
+        const lineSubtitle = document.getElementById('lineSubtitle');
+        const btnContinue = document.getElementById('btnContinue');
+        const story = document.getElementById('story');
+        const promptEl = document.getElementById('prompt');
+        const quizEl = document.getElementById('quiz');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const resultEl = document.getElementById('result');
+
+        const questions = [
+            {
+                q: '1. 哪個特徵最接近文山包種茶？',
+                opts: ['A. 條索緊結', 'B. 圓球型', 'C. 紅褐色為主', 'D. 葉片碎裂'],
+                ans: 0
+            },
+            {
+                q: '2. 在文山包種茶焙火過程中，如果火候偏低，下列哪一項最可能發生？',
+                opts: ['A. 香氣無法完全轉化，仍殘留青味與青草氣', 'B. 茶葉表層糖類焦化，導致帶有焦糖與炭焙香', 'C. 茶葉結構受熱破壞，條索鬆散而碎裂', 'D. 茶湯轉為紅橙色，呈現似紅茶的熟果酸香'],
+                ans: 0
+            },
+            {
+                q: '3. 文山包種茶在焙火後香氣「變化過程」的正確順序為何？',
+                opts: ['A. 青味減弱 → 花香凸顯 → 焙火韻沉穩', 'B. 花香最先消失 → 青味增強 → 焙火味出現', 'C. 焙火香先出 → 青味轉甜 → 花香最後浮現', 'D. 花香與焙火香同步釋放，不存在過程差異'],
+                ans: 0
+            },
+            {
+                q: '4. 下列哪項最能代表「焙火完成度不足」的包種茶特徵？',
+                opts: ['A. 茶湯入口稍澀，香氣飄散快，收斂度不足', 'B. 條索黑亮油潤，茶湯厚實帶熟火氣', 'C. 茶湯呈深琥珀色，並帶有炭焙與焦糖調', 'D. 乾茶呈深褐球狀，香氣沉香帶木質調'],
+                ans: 0
+            }
+        ];
+
+        let selected = [null, null, null, null];
+
+        async function startSequence() {
+            await sleep(1000);
+            modal.classList.add('show');
+            await sleep(300);
+            lineTitle.classList.add('show');
+            await sleep(500);
+            lineSubtitle.classList.add('show');
+            await sleep(600);
+            btnContinue.classList.add('show', 'blink');
         }
+
+        function getCouponStoreKey() {
+            const user = (typeof getCurrentUser === 'function' && getCurrentUser()) || 'guest';
+            return `coupons:${user}`;
+        }
+
+        function loadCouponsData() {
+            return JSON.parse(localStorage.getItem(getCouponStoreKey()) || '{}');
+        }
+
+        function saveCouponsData(data) {
+            localStorage.setItem(getCouponStoreKey(), JSON.stringify(data));
+        }
+
+        function awardCoupon() {
+            const data = loadCouponsData();
+            const now = Date.now();
+            if (data['5']) return { already: true };
+            data['5'] = {
+                name: '焙茶體驗課程優惠券',
+                obtainedAt: now,
+                expiresAt: now + 30 * 24 * 60 * 60 * 1000,
+                used: false
+            };
+            saveCouponsData(data);
+            return { already: false };
+        }
+
+        function renderQuiz() {
+            quizEl.innerHTML = '';
+            questions.forEach((qObj, qIdx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question';
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-title';
+                qTitle.textContent = qObj.q;
+                qDiv.appendChild(qTitle);
+                const optsDiv = document.createElement('div');
+                optsDiv.className = 'options';
+                qObj.opts.forEach((opt, oIdx) => {
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'option';
+                    optDiv.textContent = opt;
+                    optDiv.addEventListener('click', () => {
+                        Array.from(optsDiv.children).forEach(el => el.classList.remove('selected'));
+                        optDiv.classList.add('selected');
+                        selected[qIdx] = oIdx;
+                    });
+                    optsDiv.appendChild(optDiv);
+                });
+                qDiv.appendChild(optsDiv);
+                quizEl.appendChild(qDiv);
+            });
+        }
+
+        btnSubmit.addEventListener('click', () => {
+            if (selected.includes(null)) {
+                resultEl.className = 'result error';
+                resultEl.textContent = '請回答所有問題';
+                return;
+            }
+            const allCorrect = selected.every((s, i) => s === questions[i].ans);
+            if (allCorrect) {
+                const res = awardCoupon();
+                resultEl.className = 'result success';
+                if (res.already) {
+                    resultEl.textContent = '你已經領取過優惠卷';
+                } else {
+                    resultEl.textContent = '答對了';
+                    setTimeout(() => { resultEl.textContent = '你已成功獲得本關優惠券'; }, 800);
+                }
+            } else {
+                resultEl.className = 'result error';
+                resultEl.textContent = '有錯誤，請重新作答';
+                setTimeout(() => {
+                    selected = [null, null, null, null];
+                    renderQuiz();
+                    resultEl.textContent = '';
+                }, 2000);
+            }
+        });
+
+        async function typeText(el, text, delay = 35) {
+            el.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                el.innerHTML += (text[i] === '\n') ? '<br>' : text[i];
+                await sleep(delay);
+            }
+        }
+
+        async function onContinue() {
+            btnContinue.classList.remove('blink');
+            btnContinue.disabled = true;
+            story.classList.add('show');
+            const text = `揉捻後需經過乾燥與焙火，讓茶葉水分降至最低，香氣穩定凝結。\n焙火的火候與時間掌握，決定了文山包種茶最終的花香與清爽韻味。\n茶至此刻，方能稱為真正的「成茶」，準備被世人品味。`;
+            await typeText(story, text, 35);
+            await sleep(300);
+            promptEl.textContent = '請回答以下 4 題，全對即可獲得優惠券';
+            promptEl.classList.add('show');
+            await sleep(400);
+            renderQuiz();
+            quizEl.classList.add('show');
+            await sleep(200);
+            btnSubmit.classList.add('show');
+        }
+
+        function goBack() { window.location.href = 'game.html'; }
+        btnContinue.addEventListener('click', onContinue);
+        startSequence();
     </script>
 </body>
 </html>
